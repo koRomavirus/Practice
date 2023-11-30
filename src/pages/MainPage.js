@@ -1,40 +1,43 @@
-import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import CustomTable from '../components/CustomTable';
+import React, { useState, useEffect } from 'react';
+import GetDataReport from "../components/GetDataReport";
+import { useLocation } from 'react-router-dom';
+
 
 
 
 function MainPage(){
+  const location = useLocation();
+  const [token, setToken] = useState(null);
+  const [name, setName] = useState('');
+  const [selectedDate, setSelectedDate] = useState(null);
 
-    return(
-      <div>
-        <Navbar expand="lg" className='bg-secondary' >
-          <Container fluid>
-            <Navbar.Brand href="#">Logo</Navbar.Brand>
-            <Navbar.Toggle aria-controls="navbarScroll"/>  
-            <Navbar.Collapse id='navbarScroll' >
-              <Nav
-                className="me-auto my-2 "
-                style={{ maxHeight: 'auto' }}
-              >
-                <Nav.Link href="#action1">Home</Nav.Link>
-              </Nav>
-                        
-              <div className='me-3'>
-                  <h4>Poltoranin-ss</h4>
-                
-              </div>
-            </Navbar.Collapse>
-          </Container>
+  useEffect(() => {
+    if (location.state && location.state.token && location.state.userName) {
+      setToken(location.state.token);
+      setName(location.state.userName);
+      setSelectedDate(location.state.selectedDate || ''); 
+    }
+  }, [location.state]);
 
-      </Navbar>
-      <CustomTable></CustomTable>
+  const handleDateChange = (event) => {
+      setSelectedDate(event.target.value);
+  };
+
+  return (
+      <div className='ms-5'>
+        <h1 className='text-end me-5'>{name}</h1>
+        <div className='d-flex'>
+          <h3>Дата:</h3>
+          <input
+            className='ms-2'
+            type="month"
+            value={selectedDate}
+            onChange={handleDateChange}
+          />
+        </div>
+        <GetDataReport token={token} datePeriod={selectedDate} />
       </div>
-        
-    )
+  );
     
 }
 export default MainPage

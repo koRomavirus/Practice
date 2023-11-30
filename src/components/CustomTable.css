@@ -1,5 +1,5 @@
 @media screen and (max-width: 768px) {
-    /* Применяем стили только для устройств с максимальной шириной 768px (мобильные устройства) */
+    
     .card-container {
       padding-left: 10px;
       padding-right: 10px;
