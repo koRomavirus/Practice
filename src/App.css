@@ -1,0 +1,6 @@
+@media screen and (max-width: 992px) {
+    #navbarScroll{
+        margin-left: 10px;
+        font-size: 15px;
+    }
+}
