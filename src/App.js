@@ -5,81 +5,77 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import {Routes, Route} from 'react-router-dom'
 import { Link} from "react-router-dom";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css'
 import News from './pages/News';
 import Surveys from './pages/Surveys';
 import Notifications from './pages/Notifications';
-import KnowledgeBase from './pages/KnowledgeBase';
-import DiningRoom from './pages/DiningRoom';
+import FAQ from './pages/FAQ';
+import { useLocation } from 'react-router-dom';
+import Image from 'react-bootstrap/Image';
 
 function App() {
-
+  const [token, setToken] = useState(localStorage.getItem('token') || null);
+  const [role, setRole] = useState(localStorage.getItem('role') || null);
   const [showInfoCenterLink, setShowInfoCenterLink] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  const location = useLocation();
+useEffect(() => {  
+  const storedToken = localStorage.getItem('token');
+const storedRole = localStorage.getItem('role');  
+if (location.state && location.state.token && location.state.role) {    setToken(location.state.token);
+  setRole(location.state.role);    localStorage.setItem('token', location.state.token);
+  localStorage.setItem('role', location.state.role);  } else if (storedToken && storedRole) {
+  setToken(storedToken);    setRole(storedRole);
+}}, [location.state]);
+
+
+    
   const handleSuccessfulLogin = () => {
     setShowInfoCenterLink(true);
     setIsLoggedIn(true);
   };
   const handleLogout = () => {
-    setIsLoggedIn(false);
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
   };
 
   return (
     <div>
-         <Navbar expand="lg" style={{backgroundColor:'#eaebe9'}} >
-          
-          <Navbar.Brand className='ms-4'  href="#">Logo</Navbar.Brand>
-          <Navbar.Toggle aria-controls="navbarScroll"/>  
-          <Navbar.Collapse id='navbarScroll' >
-            <Nav  
-              className="me-auto my-2 "
-              style={{ maxHeight: 'auto' }}
-            >     
-              <Nav.Link href="/MainPage">Информационный центр</Nav.Link>
-            </Nav>
-            <Nav
-              className="me-auto my-2"
-              style={{ maxHeight: 'auto' }}
-            >
-              <Nav.Link href="/News">Новости </Nav.Link>
-            </Nav>
-            <Nav
-              className="me-auto my-2 "
-              style={{ maxHeight: 'auto' }}
-            >
-              <Nav.Link href="/Surveys">Опросы</Nav.Link>
-            </Nav>
-            <Nav
-              className="me-auto my-2 "
-              style={{ maxHeight: 'auto' }}
-            >
-              <Nav.Link href="/Notifications">Уведомления</Nav.Link>
-            </Nav>
-            <Nav
-              className="me-auto my-2 "
-              style={{ maxHeight: 'auto' }}
-            >
-              <Nav.Link href="/KnowledgeBase">База знаний </Nav.Link>
-            </Nav>
-            <Nav
-              className="me-auto my-2 "
-              style={{ maxHeight: 'auto' }}
-            >
-              <Nav.Link href="/DiningRoom">Столовая  </Nav.Link>
-            </Nav>
+      <Navbar expand="lg" style={{backgroundColor:'#0563B4'}} >
+        
+        <Image style={{ width: '50px', marginLeft:'25px' }} src="https://www.atomexp.ru/source/pic/logo-white.svg" />
+        <Navbar.Toggle aria-controls="navbarScroll"/>  
+        <Navbar.Collapse id='navbarScroll'style={{marginLeft:'25px'}} >
 
-            <Nav className='ms-auto me-5'>
-            {isLoggedIn ? (
-              <Nav.Link  onClick={handleLogout}   as={Link} to="/"><h4>Выйти</h4></Nav.Link>
-            ) : (
-              <Nav.Link as={Link}  to="/" ><h6>Выйти</h6></Nav.Link>
-            )}
+        {token && role && role == "DIRECTOR_VIEW" && (
+          <Nav>     
+            <Nav.Link href="/MainPage"><h5>Информационный центр</h5></Nav.Link>
           </Nav>
-          </Navbar.Collapse>
-         
-       </Navbar>   
+            )}
+          <Nav>
+            <Nav.Link href="/News"><h5>Новости</h5></Nav.Link>
+          </Nav>
+          <Nav>
+            <Nav.Link href="/Surveys"><h5>Опросы</h5></Nav.Link>
+          </Nav>
+          <Nav>
+            <Nav.Link href="/Notifications"><h5>Уведомления</h5></Nav.Link>
+          </Nav>
+          <Nav>
+            <Nav.Link href="/FAQ"><h5>База знаний</h5> </Nav.Link>
+          </Nav>
+          <Nav>
+          {isLoggedIn ? (
+            <Nav.Link  onClick={handleLogout}   as={Link} to="/"><h5>Выйти</h5></Nav.Link>
+          ) : (
+            <Nav.Link as={Link}  to="/" ><h5>Выйти</h5></Nav.Link>
+          )}
+        </Nav>
+        </Navbar.Collapse>
+        
+      </Navbar>   
        
        <Routes>
         <Route index element={<Login onShowPage={handleSuccessfulLogin}></Login>} />
@@ -87,9 +83,8 @@ function App() {
         <Route path='/News' element={<News/>} />
         <Route path='/Surveys' element={<Surveys/>} />
         <Route path='/Notifications' element={<Notifications/>} />
-        <Route path='/KnowledgeBase' element={<KnowledgeBase/>} />
-        <Route path='/DiningRoom' element={<DiningRoom/>} />
-      </Routes>
+        <Route path='/FAQ' element={<FAQ/>} />
+       </Routes>
     </div>
   
   );

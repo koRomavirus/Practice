@@ -1,6 +1,6 @@
 import{ useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { resolvePath, useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 
 
@@ -25,6 +25,7 @@ function Report(props) {
       setLoginError(null);
       props.onSuccessfulLogin();
       navigateToMainPage(response.data);
+      navigateNews(response.data);
     } catch (error) {
       console.error('Error:', error);
       setUserData(null);
@@ -33,16 +34,24 @@ function Report(props) {
   };
 
   const navigateToMainPage = (userData) => {
-    navigate('/MainPage', { state: { 
+    const currentPath = window.location.pathname; 
+    navigate(currentPath, {
+      state: {
+        token: userData.token,
+        role: userData.user.roles,
+      },
+    });
+  };
+  
+  const navigateNews = (userData) => {
+    navigate('/News', { state: { 
       token: userData.token, 
-      userName: userData.user.NameActual,
+      role: userData.user.roles,
       } });
   };
-
   return (
     <div>
       <Button className='mt-4 ms-5 ' onClick={handleLogin} variant="primary">Авторизоваться</Button>{' '}
-      
       <p>{loginError}</p>
     </div>
   );

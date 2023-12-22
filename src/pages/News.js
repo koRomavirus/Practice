@@ -1,9 +1,19 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import Card from 'react-bootstrap/Card';
+import { useLocation } from 'react-router-dom'; 
 
 function News() {
   const [news, setNews] = useState([]);
+  const location = useLocation(); 
+
+  useEffect(() => { 
+    if (location.state && location.state.token && location.state.role) { 
+      localStorage.setItem('token', location.state.token); 
+      localStorage.setItem('role', location.state.role);
+    } 
+  }, [location.state]); 
+ 
 
   const fetchData = async () => {
     try {
